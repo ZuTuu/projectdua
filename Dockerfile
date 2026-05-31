@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y libpng-dev libzip-dev zip unzip \
 WORKDIR /var/www/html
 
 # Copy file sertifikat ke dalam container
-COPY cert.pem /var/www/html/cacert.pem
+COPY cacert.pem /var/www/html/cacert.pem
 # Copy file project
 COPY . .
 
