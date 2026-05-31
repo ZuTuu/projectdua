@@ -60,7 +60,7 @@ return [
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 // Mengarahkan ke file sertifikat di root folder
-                \PDO::MYSQL_ATTR_SSL_CA => base_path('cert.pem'), 
+                \PDO::MYSQL_ATTR_SSL_CA => base_path('cacert.pem'), 
                 
                 // Tetap gunakan false jika tidak perlu verifikasi ketat, 
                 // tapi kalau mau lebih aman, coba set ke true
