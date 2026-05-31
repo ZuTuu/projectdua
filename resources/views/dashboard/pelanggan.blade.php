@@ -78,13 +78,10 @@
                 <td>
                     @if($hotel->status == 'Menunggu Pembayaran')
                         <span style="padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; background: #fff3cd; color: #856404;">⏳ {{ $hotel->status }}</span>
-                    @elseif(in_array($hotel->status, ['Dikonfirmasi', 'Selesai', 'Menunggu Jadwal', 'Diproses']))
+                    @elseif($hotel->status == 'Dikonfirmasi' || $hotel->status == 'Selesai')
                         <span style="padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; background: #d4edda; color: #155724;">✅ {{ $hotel->status }}</span>
                     @elseif($hotel->status == 'Dibatalkan')
                         <span style="padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; background: #f8d7da; color: #721c24;">❌ {{ $hotel->status }}</span>
-                        @if($hotel->alasan_batal)
-                            <br><small style="color: #666; margin-top: 4px; display: block; font-style: italic;">💬 {{ $hotel->alasan_batal }}</small>
-                        @endif
                     @else
                         <span style="padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; background: #e2e8f0; color: #475569;">🔔 {{ $hotel->status }}</span>
                     @endif
@@ -95,7 +92,7 @@
                             <a href="{{ route('reservasi.bayar', $hotel->id) }}" class="btn-action" style="background: #007bff; color: white;">💳 Bayar DP</a>
                         @endif
 
-                        @if(in_array($hotel->status, ['Menunggu Jadwal', 'Diproses', 'Selesai']))
+                        @if($hotel->status == 'Selesai')
                             <a href="{{ route('reservasi.e-ticket.download', $hotel->id) }}" class="btn-action" style="background: #28a745; color: white;">📄 E-Ticket</a>
                         @endif
 
@@ -104,6 +101,8 @@
                                 @csrf
                                 <button type="submit" class="btn-action" style="background: #dc3545; color: white;">🗑️ Batalkan</button>
                             </form>
+                        @else
+                            <span style="color: #aaa; font-size: 13px;">Tidak ada aksi</span>
                         @endif
                     </div>
                 </td>
@@ -113,7 +112,7 @@
             @endforelse
         </tbody>
     </table>
-    <div style="margin-top: 15px;">
+    <div class="mt-4" style="margin-top: 15px;">
         {{ $petHotel->appends(request()->except('hotel_page'))->links() }}
     </div>
 </div>
@@ -146,13 +145,10 @@
                 <td>
                     @if($layanan->status == 'Menunggu Pembayaran')
                         <span style="padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; background: #fff3cd; color: #856404;">⏳ {{ $layanan->status }}</span>
-                    @elseif(in_array($layanan->status, ['Dikonfirmasi', 'Selesai', 'Menunggu Jadwal', 'Diproses']))
+                    @elseif($layanan->status == 'Dikonfirmasi' || $layanan->status == 'Selesai')
                         <span style="padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; background: #d4edda; color: #155724;">✅ {{ $layanan->status }}</span>
                     @elseif($layanan->status == 'Dibatalkan')
                         <span style="padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; background: #f8d7da; color: #721c24;">❌ {{ $layanan->status }}</span>
-                        @if($layanan->alasan_batal)
-                            <br><small style="color: #666; margin-top: 4px; display: block; font-style: italic;">💬 {{ $layanan->alasan_batal }}</small>
-                        @endif
                     @else
                         <span style="padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; background: #e2e8f0; color: #475569;">🔔 {{ $layanan->status }}</span>
                     @endif
@@ -163,8 +159,7 @@
                             <a href="{{ route('reservasi.bayar', $layanan->id) }}" class="btn-action" style="background: #007bff; color: white;">💳 Bayar DP</a>
                         @endif
 
-                        {{-- INI UDAH FIX PAKAI $layanan --}}
-                        @if(in_array($layanan->status, ['Menunggu Jadwal', 'Diproses', 'Selesai']))
+                        @if($layanan->status == 'Selesai')
                             <a href="{{ route('reservasi.e-ticket.download', $layanan->id) }}" class="btn-action" style="background: #28a745; color: white;">📄 E-Ticket</a>
                         @endif
 
@@ -173,6 +168,8 @@
                                 @csrf
                                 <button type="submit" class="btn-action" style="background: #dc3545; color: white;">🗑️ Batalkan</button>
                             </form>
+                        @else
+                            <span style="color: #aaa; font-size: 13px;">Tidak ada aksi</span>
                         @endif
                     </div>
                 </td>
@@ -182,7 +179,7 @@
             @endforelse
         </tbody>
     </table>
-    <div style="margin-top: 15px;">
+    <div class="mt-4" style="margin-top: 15px;">
         {{ $layananLain->appends(request()->except('layanan_page'))->links() }}
     </div>
 </div>
@@ -201,13 +198,13 @@
                 <th>Total Harga</th>
                 <th>Metode Pengiriman</th>
                 <th>Status</th>
-                <th style="text-align: center;">Aksi</th> </tr>
+            </tr>
         </thead>
         <tbody>
             @forelse($pembelianProduk as $key => $trx)
             <tr>
                 <td>{{ ($pembelianProduk->currentPage() - 1) * $pembelianProduk->perPage() + $key + 1 }}</td>
-                <td style="font-weight: bold; color: #666;">#TRX-{{ $trx->id }}</td>
+                <td style="font-weight: bold; color: #666;">#{{ $trx->id }}</td>
                 <td>
                     <ul style="margin: 0; padding-left: 15px; font-size: 13px;">
                         @foreach($trx->detilProduk as $detil)
@@ -218,7 +215,7 @@
                 <td style="font-weight: bold; color: #800080;">Rp {{ number_format($trx->total_harga, 0, ',', '.') }}</td>
                 <td>
                     <span style="text-transform: capitalize; font-size: 13px;">
-                        {{ $trx->metode_pengiriman == 'delivery' ? '🚚 Kirim ke Rumah' : '📍 Ambil di Toko' }}
+                        🚗 {{ $trx->metode_pengiriman == 'delivery' ? 'Kirim ke Rumah' : 'Ambil di Toko' }}
                     </span>
                 </td>
                 <td>
@@ -226,43 +223,30 @@
                         <span style="padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; background: #d4edda; color: #155724;">✅ {{ $trx->status }}</span>
                     @elseif($trx->status == 'Dibatalkan')
                         <span style="padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; background: #f8d7da; color: #721c24;">❌ {{ $trx->status }}</span>
-                        @if($trx->alasan_tolak)
-                            <br><small style="color: #666; margin-top: 4px; display: block; font-style: italic;">💬 {{ $trx->alasan_tolak }}</small>
-                        @endif
                     @else
                         <span style="padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; background: #fff3cd; color: #856404;">📦 {{ $trx->status }}</span>
                     @endif
                 </td>
-                <td style="text-align: center;">
-                    {{-- 👉 Tombol Cetak Struk hanya aktif saat status transaksi sudah Selesai --}}
-                    @if($trx->status == 'Selesai')
-                        <a href="{{ route('transaksi.struk.download', $trx->id) }}" class="btn-action" style="background: #36005E; color: white;">📄 Cetak Struk</a>
-                    @else
-                        <span style="color: #aaa; font-size: 13px;">Belum Tersedia</span>
-                    @endif
-                </td>
             </tr>
             @empty
-            <tr><td colspan="7" style="text-align: center; padding: 30px; color: #9ca3af;">Belum ada riwayat pembelian produk.</td></tr>
+            <tr><td colspan="6" style="text-align: center; padding: 30px; color: #9ca3af;">Belum ada riwayat pembelian produk.</td></tr>
             @endforelse
         </tbody>
     </table>
-    <div style="margin-top: 15px;">
+    <div class="mt-4" style="margin-top: 15px;">
         {{ $pembelianProduk->appends(request()->except('produk_page'))->links() }}
     </div>
 </div>
+
 <script>
     function mintaAlasanDP(event, form, namaLayanan, status) {
         event.preventDefault();
-
         let pesan = `Apakah kamu yakin ingin membatalkan jadwal ${namaLayanan} ini?\n\n`;
-        if (status === 'Disetujui' || status === 'Dikonfirmasi' || status === 'Menunggu Konfirmasi Admin' || status === 'Menunggu Jadwal' || status === 'Diproses') {
+        if (status === 'Disetujui' || status === 'Dikonfirmasi' || status === 'Menunggu Konfirmasi Admin' || status === 'Menunggu Jadwal') {
             pesan += "⚠️ PERINGATAN: Karena reservasi sudah masuk tahap proses, uang DP yang sudah dibayarkan TIDAK DAPAT DIKEMBALIKAN (Hangus).\n\n";
         }
         pesan += "Silakan masukkan alasan pembatalan:";
-        
         let alasan = prompt(pesan);
-        
         if (alasan !== null && alasan.trim() !== '') {
             let inputAlasan = document.createElement('input');
             inputAlasan.type = 'hidden';

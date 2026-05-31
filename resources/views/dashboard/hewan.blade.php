@@ -77,7 +77,7 @@
                 <div class="form-group" style="flex: 1;">
                     <label>Umur</label>
                     <div style="display: flex; gap: 5px;">
-                <input type="number" name="umur_angka" required min="1" max="50" placeholder="Angka" style="width: 50%;">
+                        <input type="number" name="umur_angka" required min="1" max="50" placeholder="Angka" style="width: 50%;">
                         <select name="umur_satuan" required style="width: 50%;">
                             <option value="Bulan">Bulan</option>
                             <option value="Tahun">Tahun</option>

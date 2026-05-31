@@ -17,16 +17,13 @@ class Transaksi extends Model
         return $this->hasMany(DetilTransaksiProduk::class, 'transaksi_id');
     }
 
-protected $fillable = [
-        'user_id',
-        'total_harga',
-        'status',
-        'alasan_tolak', // <--- TAMBAHKAN INI
-        'bukti_pembayaran',
+    protected $fillable = [
+        'user_id', 
+        'total_harga', 
+        'status', 
+        'bukti_pembayaran', 
         'metode_pengiriman',
         'tanggal_ambil',
-        'stok_dikurangi',
-        'metode_pembayaran',
-        'kembalian'
+        'stok_dikurangi'
     ];
 }

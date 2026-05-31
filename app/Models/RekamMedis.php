@@ -31,7 +31,6 @@ class RekamMedis extends Model
         'hewan_id',
         'diagnosa',
         'tindakan',
-        'biaya_tambahan',
         'catatan',     // <--- INI JUGA WAJIB ADA!
         'tanggal_periksa'
     ];

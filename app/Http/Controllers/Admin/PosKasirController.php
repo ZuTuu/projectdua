@@ -87,8 +87,7 @@ class PosKasirController extends Controller
 
         // Pakai Try-Catch biar aplikasi gak crash kalau Exception ke-trigger
         try {
-            $transaksiId = null;
-            DB::transaction(function () use ($totalHarga, $statusAwal, $buktiPath, $detailRows, $request, &$transaksiId) {
+            DB::transaction(function () use ($totalHarga, $statusAwal, $buktiPath, $detailRows) {
                 // Lock row produk supaya stok konsisten
                 $produkIds = collect($detailRows)->pluck('produk_id')->unique()->values()->all();
                 $produksLocked = Produk::whereIn('id', $produkIds)->lockForUpdate()->get()->keyBy('id');
@@ -116,11 +115,7 @@ class PosKasirController extends Controller
                     'total_harga' => $totalHarga,
                     'status' => $statusAwal,
                     'bukti_pembayaran' => $buktiPath,
-                    'metode_pembayaran' => $request->payment_method,
-                    'metode_pengiriman' => 'Transaksi Offline',
                 ]);
-
-                $transaksiId = $transaksi->id;
 
                 // Insert child record satu per satu (Pengganti sync)
                 foreach ($detailRows as $d) {
@@ -133,22 +128,11 @@ class PosKasirController extends Controller
                 }
             });
 
-            return redirect()->route('admin.pos.receipt', ['id' => $transaksiId]);
+            return redirect()->route('admin.transaksi.index')->with('success', 'Transaksi POS berhasil dibuat.');
 
         } catch (\Exception $e) {
             // Kalau ada error (kayak stok habis), balikin pesannya ke halaman POS
             return back()->withInput()->with('error', 'Gagal memproses transaksi: ' . $e->getMessage());
         }
-    }
-
-    public function receipt($id)
-    {
-        $transaksi = Transaksi::with('detilProduk.produk', 'user')->find($id);
-
-        if (!$transaksi) {
-            return redirect()->route('admin.pos.index')->with('error', 'Transaksi tidak ditemukan.');
-        }
-
-        return view('dashboard.admin.receipt', compact('transaksi'));
     }
 }

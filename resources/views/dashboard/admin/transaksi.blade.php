@@ -72,19 +72,4 @@
         </div>
     </div>
 </div>
-<script>
-    function cekStatusBatal(selectElement) {
-        // Cari elemen container alasan_tolak di dalam form yang sama
-        let alasanContainer = selectElement.closest('form').querySelector('.alasan-tolak-container');
-        
-        // Cek jika valuenya 'Dibatalkan'
-        if (selectElement.value === 'Dibatalkan') {
-            alasanContainer.style.display = 'block';
-            alasanContainer.querySelector('input').setAttribute('required', 'required'); // Wajib isi
-        } else {
-            alasanContainer.style.display = 'none';
-            alasanContainer.querySelector('input').removeAttribute('required');
-        }
-    }
-</script>
 @endsection

@@ -3,13 +3,10 @@
 @section('title', 'Dashboard Owner - Paw Center')
 
 @section('content')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-<div class="container-fluid py-4" id="area-dashboard">
+<div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 style="color: #4A148C; font-weight: 700;">📊 Dashboard Owner - Laporan Operasional</h2>
-        
-        <div class="d-print-none" style="display: flex; gap: 10px; align-items: center;">
+        <div style="display: flex; gap: 10px; align-items: center;">
             <form method="GET" action="{{ route('dashboard.owner') }}" style="display: flex; gap: 10px;">
                 <select name="mode" class="form-select" style="width: auto;" onchange="this.form.submit()">
                     <option value="day" {{ $mode === 'day' ? 'selected' : '' }}>Harian</option>
@@ -29,10 +26,9 @@
                     @endif
                 </select>
             </form>
-            
-            <button onclick="downloadPDF()" class="btn btn-primary" style="background: #8E24AA; border: none; font-weight: 600;">
-                📄 Download PDF
-            </button>
+            <a href="{{ route('owner.laporan.print', ['mode' => $mode, 'count' => $count]) }}" target="_blank" class="btn btn-primary" style="background: #8E24AA; border: none; font-weight: 600;">
+                🖨️ Print Laporan
+            </a>
         </div>
     </div>
 
@@ -130,8 +126,7 @@
             labels: {!! json_encode($pieLabels) !!},
             datasets: [{
                 data: {!! json_encode($pieData) !!},
-                backgroundColor: ['#4A148C', '#8E24AA', '#AB47BC', '#CE93D8', '#F3E5F5'],
-                borderWidth: 0
+                backgroundColor: ['#4A148C', '#8E24AA', '#AB47BC', '#CE93D8', '#F3E5F5']
             }]
         }
     });
@@ -144,55 +139,9 @@
             labels: {!! json_encode($topLayananPieLabels) !!},
             datasets: [{
                 data: {!! json_encode($topLayananPieData) !!},
-                backgroundColor: ['#1B5E20', '#388E3C', '#4CAF50', '#81C784', '#C8E6C9'],
-                borderWidth: 0
+                backgroundColor: ['#1B5E20', '#388E3C', '#4CAF50', '#81C784', '#C8E6C9']
             }]
         }
     });
-
-    // 4. Fungsi Generate PDF (Anti Kepotong)
-    function downloadPDF() {
-        // Scroll ke atas dulu
-        window.scrollTo(0, 0);
-
-        const element = document.getElementById('area-dashboard');
-
-        // BUKA PAKSA SCROLL & HEIGHT (Ini kuncinya sayang!)
-        const originalHtmlHeight = document.documentElement.style.height;
-        const originalBodyHeight = document.body.style.height;
-        const originalHtmlOverflow = document.documentElement.style.overflow;
-        const originalBodyOverflow = document.body.style.overflow;
-
-        document.documentElement.style.setProperty('height', 'auto', 'important');
-        document.body.style.setProperty('height', 'auto', 'important');
-        document.documentElement.style.setProperty('overflow', 'visible', 'important');
-        document.body.style.setProperty('overflow', 'visible', 'important');
-
-        const opt = {
-            margin:       [10, 10, 10, 10], 
-            filename:     'Dashboard-Owner-PawCenter.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            pagebreak:    { mode: ['css', 'legacy'] },
-            html2canvas:  { 
-                scale: 2, 
-                useCORS: true,
-                scrollY: 0, 
-                windowWidth: document.documentElement.offsetWidth,
-                windowHeight: document.documentElement.scrollHeight,
-                ignoreElements: (node) => {
-                    return node.classList && node.classList.contains('d-print-none');
-                }
-            },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-        };
-
-        html2pdf().set(opt).from(element).save().then(() => {
-            // BALIKIN LAGI SCROLL & HEIGHTNYA KALAU UDAH BERES
-            document.documentElement.style.height = originalHtmlHeight;
-            document.body.style.height = originalBodyHeight;
-            document.documentElement.style.overflow = originalHtmlOverflow;
-            document.body.style.overflow = originalBodyOverflow;
-        });
-    }
 </script>
 @endsection

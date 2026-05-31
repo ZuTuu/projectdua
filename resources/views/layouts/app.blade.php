@@ -23,7 +23,7 @@
                     <span class="menu-icon">🏠</span><span class="menu-text">Dashboard</span>
                 </a>
                 <a href="{{ route('dashboard.katalog') }}">
-                    <span class="menu-icon">🛍️</span><span class="menu-text">Lihat Katalog</span>
+                    <span class="menu-icon">🛍️</span><span class="menu-text">Layanan & Produk</span>
                 </a>
                 <a href="{{ route('pelanggan.hewan') }}">
                     <span class="menu-icon">🐶</span><span class="menu-text">Data Hewan</span>
@@ -40,7 +40,7 @@
                 <a href="{{ route('dashboard.staff') }}">
                     <span class="menu-icon">🏠</span><span class="menu-text">Dashboard</span>
                 </a>
-
+                
                 {{-- Menu Tambahan buat Staff --}}
                 <a href="{{ route('dashboard.pesanan.hotel') }}">
                     <span class="menu-icon">🏨</span><span class="menu-text">Pesanan Pet Hotel</span>
@@ -57,11 +57,11 @@
                 <a href="{{ route('admin.layanan.index') }}">
                     <span class="menu-icon">🩺</span><span class="menu-text">Kelola Layanan Klinik</span>
                 </a>
-
+                
                 <a href="{{ route('profil.umum') }}">
                     <span class="menu-icon">👤</span><span class="menu-text">Profil Saya</span>
                 </a>
-
+            
             {{-- --- MENU DOKTER --- --}}
             @elseif(Auth::check() && Auth::user()->role == 'dokter')
                 <a href="{{ route('dashboard.dokter') }}">
@@ -76,7 +76,7 @@
                 <a href="{{ route('profil.umum') }}">
                     <span class="menu-icon">👤</span><span class="menu-text">Profil Saya</span>
                 </a>
-
+            
             {{-- --- MENU ADMIN, KASIR, & OWNER --- --}}
             @elseif(Auth::check() && in_array(Auth::user()->role, ['admin', 'kasir', 'owner']))
 
@@ -93,9 +93,6 @@
                 @else
                     <a href="{{ route('dashboard.admin') }}">
                         <span class="menu-icon">🏠</span><span class="menu-text">Dashboard</span>
-                    </a>
-                    <a href="{{ route('dashboard.katalog') }}">
-                        <span class="menu-icon">🛍️</span><span class="menu-text">Katalog</span>
                     </a>
                     <a href="{{ route('admin.users.index') }}">
                         <span class="menu-icon">👥</span><span class="menu-text">Kelola Akun</span>
