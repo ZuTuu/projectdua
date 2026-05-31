@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paw Center - D&F Pet Shop</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    @vite(['resources/css/style.css'])
     <style>
         .sub-judul {
             text-align: center; color: #36005E; font-size: 1.3rem; margin: 40px 0 20px; font-weight: 600;
