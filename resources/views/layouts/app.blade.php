@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paw Center - D&F Pet Shop</title>
 
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v={{ time() }}">
 </head>
 <body class="dashboard-body">
 
