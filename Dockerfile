@@ -1,26 +1,32 @@
-FROM php:8.2-apache
+FROM php:8.2-cli
 
-# Install ekstensi PHP yang dibutuhkan
-RUN apt-get update && apt-get install -y libpng-dev libzip-dev zip unzip \
+# Install dependencies yang dibutuhkan Laravel
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    git \
     && docker-php-ext-install pdo_mysql gd zip
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy file sertifikat ke dalam container
-COPY cacert.pem /var/www/html/cacert.pem
-# Copy file project
+# Copy semua file project
 COPY . .
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Setup Permissions
+# Pastikan permission folder storage dan cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Ubah Document Root Apache ke folder public
-RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
-RUN a2enmod rewrite
+# Expose port (Render menggunakan port dinamis, tapi kita buka 8080 sebagai default)
+EXPOSE 8080
 
-EXPOSE 80
+# Jalankan perintah optimize sebelum menjalankan server
+RUN php artisan optimize:clear
+
+# Start the server (Gunakan CMD dengan sintaks shell)
+CMD php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
