@@ -25,8 +25,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Expose port (Render menggunakan port dinamis, tapi kita buka 8080 sebagai default)
 EXPOSE 8080
 
-# Jalankan perintah optimize sebelum menjalankan server
-RUN php artisan optimize:clear
-
-# Start the server (Gunakan CMD dengan sintaks shell)
-CMD php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
+# Start the server (Jalankan optimize:clear dan serve bersamaan saat runtime menggunakan shell)
+CMD sh -c "php artisan optimize:clear && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"
