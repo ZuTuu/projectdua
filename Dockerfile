@@ -22,7 +22,7 @@ ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# PERBAIKAN: Aktifkan AllowOverride agar .htaccess Laravel terbaca sempurna
+# Aktifkan AllowOverride agar .htaccess Laravel terbaca sempurna
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
 # 5. Set Working Directory
@@ -35,17 +35,20 @@ COPY . .
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
 
-# PERBAIKAN: Hapus file public/hot jika tidak sengaja terbawa dari lokal (Penyebab utama Vite 404)
+# Hapus file public/hot jika tidak sengaja terbawa dari lokal (Penyebab utama Vite 404)
 RUN rm -f public/hot
 
 # 8. JALANKAN PROSES BUILD VITE
 RUN npm install
 RUN npm run build
 
-# PERBAIKAN: Set permissions ke seluruh folder /var/www/html
-# Ini memastikan Apache (www-data) bisa membaca folder public/build hasil generate root (npm)
+# 9. BUAT STORAGE LINK (BARU)
+# Hapus dulu jika folder public/storage terbawa dari git, lalu buat ulang symlink-nya
+RUN rm -rf public/storage && php artisan storage:link
+
+# 10. Set permissions ke seluruh folder /var/www/html
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# 10. Buka port 80 untuk Apache
+# 11. Buka port 80 untuk Apache
 EXPOSE 80

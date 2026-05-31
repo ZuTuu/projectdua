@@ -6,6 +6,7 @@
     <title>Ganti Kata Sandi | Paw Center</title>
     <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}?v={{ time() }}">
+    @vite(['resources/css/style.css'])
 </head>
 <body class="auth-body">
 
