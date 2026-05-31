@@ -59,11 +59,12 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                // Mengaktifkan SSL
-                \PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                // Mengarahkan ke file sertifikat di root folder
+                \PDO::MYSQL_ATTR_SSL_CA => base_path('cert.pem'), 
                 
-                // TAMBAHKAN INI: Memaksa SSL aktif
-                \PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false, 
+                // Tetap gunakan false jika tidak perlu verifikasi ketat, 
+                // tapi kalau mau lebih aman, coba set ke true
+                \PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true, 
             ]) : [],
         ],
 
