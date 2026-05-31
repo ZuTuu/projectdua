@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# 1. Install ekstensi PHP, OS dependencies, dan curl (untuk ambil Node.js)
+# 1. Install ekstensi PHP, OS dependencies, dan curl
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libzip-dev \
@@ -22,6 +22,9 @@ ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
+# PERBAIKAN: Aktifkan AllowOverride agar .htaccess Laravel terbaca sempurna
+RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
+
 # 5. Set Working Directory
 WORKDIR /var/www/html
 
@@ -32,12 +35,16 @@ COPY . .
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
 
-# 8. JALANKAN PROSES BUILD VITE (Ini yang menyelesaikan masalah Anda!)
+# PERBAIKAN: Hapus file public/hot jika tidak sengaja terbawa dari lokal (Penyebab utama Vite 404)
+RUN rm -f public/hot
+
+# 8. JALANKAN PROSES BUILD VITE
 RUN npm install
 RUN npm run build
 
-# 9. Set permissions (Wajib agar Laravel bisa menulis log/cache)
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# PERBAIKAN: Set permissions ke seluruh folder /var/www/html
+# Ini memastikan Apache (www-data) bisa membaca folder public/build hasil generate root (npm)
+RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # 10. Buka port 80 untuk Apache
