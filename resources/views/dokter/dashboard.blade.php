@@ -193,8 +193,8 @@
                 <label style="font-size:13px; color:#666; font-weight:bold; display:block; margin-bottom:5px;">Dokter yang Menangani</label>
                 <select name="nama_dokter" style="width:100%; border:1px solid #ddd; border-radius:8px; padding:10px; font-size:14px;" required>
                     <option value="" disabled selected>-- Pilih Dokter --</option>
-                    <option value="Arifa">drh. Arifa</option> 
-                    <option value="Agung">drh. Agung</option> 
+                    <option value="Arifa">drh. Arifa</option>
+                    <option value="Agung">drh. Agung</option>
                 </select>
             </div>
 

@@ -189,7 +189,7 @@
             <p style="color: var(--text-muted); font-size: 15px; max-width: 600px; margin: 0 auto 30px; line-height: 1.6;">
                 Jika Anda memiliki pertanyaan seputar layanan klinik, stok produk pet shop, atau butuh tindakan darurat, silakan hubungi kami melalui WhatsApp.
             </p>
-            <a href="https://wa.me/6281223372450" target="_blank" class="btn" style="background-color: #36005E; color: #ffffff; border: 1px solid #2c004f; border-radius: 30px; padding: 12px 30px; font-weight: 500; text-decoration: none; display: inline-block;">
+            <a href="https://wa.me/6281223372405" target="_blank" class="btn" style="background-color: #36005E; color: #ffffff; border: 1px solid #2c004f; border-radius: 30px; padding: 12px 30px; font-weight: 500; text-decoration: none; display: inline-block;">
 
                 Hubungi Via WhatsApp
             </a>
@@ -217,8 +217,8 @@
                     <ul>
                         <li>📍 Jl. DI.Panjaitan No.24, Soklat, Kec. Subang, Kab. Subang, Jawa Barat </li>
                         <li>📍 Jl. Ion Martasasmita No. 3, Rancasari, Kec. Pamanukan, Kab. Subang, Jawa Barat</li>
-                        <li>📞 0812-2337-2450</li>
-                        <li>✉️ cs@dnfpetshop.com</li>
+                        <li>📞 0812-2337-2405</li>
+                        <li>✉️ dnfpetshop26@gmail.com</li>
                     </ul>
                 </div>
             </div>

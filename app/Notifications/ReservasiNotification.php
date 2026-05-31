@@ -30,6 +30,11 @@ class ReservasiNotification extends Notification
             // Sesuaikan pesan berdasarkan status
             if ($this->status == 'Dikonfirmasi') {
                 $pesan = 'Hore! Pembayaran DP untuk reservasi tanggal ' . $this->reservasi->tanggal . ' berhasil dikonfirmasi Admin. Layanan akan segera diproses.';
+            } elseif ($this->status == 'Ditolak') {
+                $pesan = 'Maaf, reservasi tanggal ' . $this->reservasi->tanggal . ' ditolak oleh Admin.';
+                if (!empty($this->reservasi->alasan_batal)) {
+                    $pesan .= ' Alasan: ' . $this->reservasi->alasan_batal;
+                }
             } else {
                 $pesan = 'Maaf, pembayaran DP untuk reservasi tanggal ' . $this->reservasi->tanggal . ' gagal/ditolak. Silakan cek kembali.';
             }
@@ -38,6 +43,7 @@ class ReservasiNotification extends Notification
                 'id_reservasi' => $this->reservasi->id,
                 'pesan' => $pesan,
                 'status' => $this->status,
+                'alasan_batal' => $this->reservasi->alasan_batal ?? null,
             ];
         }
 }

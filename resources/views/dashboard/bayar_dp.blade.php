@@ -11,17 +11,14 @@
         <p><strong>Layanan:</strong> {{ $reservasi->nama_layanan }}</p>
         <p><strong>Harga Total:</strong> Rp {{ number_format($reservasi->harga_total, 0, ',', '.') }}</p>
         <hr class="dp-hr">
-        
+
         <p style="font-size: 18px; color: var(--purple-800); font-weight: bold; margin: 0;">
             Wajib Bayar DP: Rp {{ number_format($reservasi->harga_total * 0.20, 0, ',', '.') }}
         </p>
     </div>
 
     <div class="dp-qris-area">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"
-             alt="QRIS Paw Center"
-             style="width: 250px; height: auto; margin-bottom: 15px; border: 1px solid #eee;">
-
+       <img src="{{ asset('storage/QRIS.png') }}" alt="QRIS Paw Center" style="width: 250px; height: auto; margin-bottom: 15px; border: 1px solid #eee;">
         <h4 style="font-size: 18px; color: var(--purple-900); font-weight: bold; margin: 0;">PAW CENTER (D&F PETS)</h4>
         <p style="color: #666; font-size: 12px;">NMID: ID1234567890123</p>
     </div>

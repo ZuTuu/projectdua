@@ -98,6 +98,32 @@
 <script>
     const cart = new Map(); // produk_id => {produk_id,nama,harga,qty}
 
+    // Notification animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+
     function formatIDR(n) {
         return new Intl.NumberFormat('id-ID', { style:'currency', currency:'IDR', maximumFractionDigits:0 }).format(n);
     }
@@ -108,6 +134,41 @@
         transferArea.style.display = method === 'transfer' ? 'block' : 'none';
     }
 
+    function showNotification(message) {
+        let container = document.getElementById('notification-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'notification-container';
+            container.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                max-width: 400px;
+            `;
+            document.body.appendChild(container);
+        }
+        
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            background: #28a745;
+            color: white;
+            padding: 14px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        `;
+        notification.textContent = message;
+        container.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease-out';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
     function addItem(produkId, nama, harga) {
         if (cart.has(produkId)) {
             cart.get(produkId).qty += 1;
@@ -115,6 +176,7 @@
             cart.set(produkId, { produk_id: produkId, nama: nama, harga: harga, qty: 1 });
         }
         renderCart();
+        showNotification(`✅ ${nama} ditambahkan ke keranjang`);
     }
 
     function changeQty(produkId, delta) {

@@ -36,41 +36,45 @@ class DokterController extends Controller
     }
 
 public function simpanRM(Request $request)
-    {
-        // 1. Validasi
-        $request->validate([
-            'reservasi_id' => 'required',
-            'diagnosa'     => 'required',
-            'tindakan'     => 'required',
-            'nama_dokter'  => 'required', // Wajib pilih dokter dari dropdown
-            'catatan'      => 'nullable',
-        ]);
+{
+    // 1. Validasi
+    $request->validate([
+        'reservasi_id'   => 'required',
+        'diagnosa'       => 'required',
+        'tindakan'       => 'required',
+        'nama_dokter'    => 'required',
+        'catatan'        => 'nullable',
+        'biaya_tambahan' => 'nullable|numeric', // ✨ JANGAN LUPA INI
+    ]);
 
-        $reservasi = reservasi::findOrFail($request->reservasi_id);
+    $reservasi = reservasi::findOrFail($request->reservasi_id);
 
-        // Cari data hewan_id asli biar nggak N/A
-        $hewan = \App\Models\hewan::where('nama_hewan', $reservasi->pet_name)
-                                  ->where('user_id', $reservasi->user_id)
-                                  ->first();
+    // Cari data hewan_id asli biar nggak N/A
+    $hewan = \App\Models\hewan::where('nama_hewan', $reservasi->pet_name)
+                              ->where('user_id', $reservasi->user_id)
+                              ->first();
 
-        // 2. Simpan ke tabel rekam_medis
-        \App\Models\RekamMedis::create([
-            'reservasi_id'    => $reservasi->id,
-            'user_id'         => Auth::id(), // Akun yang login
-            'nama_dokter'     => $request->nama_dokter, // 🔥 TARIK NAMA DARI DROPDOWN
-            'hewan_id'        => $hewan->id ?? null,
-            'diagnosa'        => $request->diagnosa,
-            'tindakan'        => $request->tindakan,
-            'catatan'         => $request->catatan,
-            'tanggal_periksa' => now(),
-        ]);
+    // 2. Simpan ke tabel rekam_medis
+    \App\Models\RekamMedis::create([
+        'reservasi_id'    => $reservasi->id,
+        'user_id'         => Auth::id(),
+        'nama_dokter'     => $request->nama_dokter,
+        'hewan_id'        => $hewan->id ?? null,
+        'diagnosa'        => $request->diagnosa,
+        'tindakan'        => $request->tindakan,
+        'catatan'         => $request->catatan,
+        'biaya_tambahan'  => $request->biaya_tambahan, // ✨ MASUKIN JUGA DI SINI BIAR KE-SAVE
+        'tanggal_periksa' => now(),
+    ]);
 
-        // 3. Update status reservasi jadi Selesai
-        $reservasi->status = 'Selesai';
-        $reservasi->save();
+    // 3. Update status reservasi jadi Selesai & Update Sisa Bayar
+    $biayaTambahan = $request->biaya_tambahan ?? 0;
+    $reservasi->sisa_bayar = $reservasi->harga_total + $biayaTambahan - $reservasi->dp;
+    $reservasi->status = 'Selesai';
+    $reservasi->save();
 
-        return back()->with('success', 'Rekam medis berhasil dicatat!');
-    }
+    return back()->with('success', 'Rekam medis berhasil dicatat!');
+}
 
     // === FITUR REKAM MEDIS ===
     public function rekamMedisIndex() {

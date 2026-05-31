@@ -108,7 +108,7 @@
                                         @csrf
                                         <input type="hidden" name="tipe" value="reservasi">
                                         <input type="hidden" name="status" value="Diproses">
-                                        <button type="submit" class="btn-action btn-acc">🫧 Mulai Grooming</button>
+                                        <button type="submit" class="btn-action btn-acc">✂️ Mulai Grooming</button>
                                     </form>
                                 @elseif($groom->status == 'Diproses')
                                     <form action="{{ route('staff.pesanan.updateStatus', $groom->id) }}" method="POST">

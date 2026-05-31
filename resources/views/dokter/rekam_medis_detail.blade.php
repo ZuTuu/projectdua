@@ -69,7 +69,7 @@
                 </div>
                 <div class="billing-box">
                     <div class="billing-label">Biaya Tambahan (Obat, dll)</div>
-                    <div class="billing-value" style="color: #b45309;">Rp {{ number_format($rekamMedis->reservasi->biaya_tambahan ?? 0, 0, ',', '.') }}</div>
+                    <div class="billing-value" style="color: #b45309;">Rp {{ number_format($rekamMedis->biaya_tambahan ?? 0, 0, ',', '.') }}</div>
                 </div>
                 <div class="billing-box">
                     <div class="billing-label">DP Lunas (20%)</div>
@@ -77,7 +77,7 @@
                 </div>
                 <div class="billing-box">
                     <div class="billing-label">Sisa Wajib Bayar</div>
-                    <div class="billing-value" style="color: #e11d48;">Rp {{ number_format($rekamMedis->reservasi->sisa_bayar ?? 0, 0, ',', '.') }}</div>
+                    <div class="billing-value" style="color: #e11d48;">Rp {{ number_format(($rekamMedis->reservasi->harga_total ?? 0) + ($rekamMedis->biaya_tambahan ?? 0) - ($rekamMedis->reservasi->dp ?? 0), 0, ',', '.') }}</div>
                 </div>
             </div>
         </div>

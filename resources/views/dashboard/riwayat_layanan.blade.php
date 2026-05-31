@@ -24,6 +24,7 @@
                         <th>Pelanggan</th>
                         <th>Nama Anabul</th> <th>Layanan</th>
                         <th>Jadwal Layanan</th>
+                        <th>Status</th>
                         <th>Update Status</th>
                     </tr>
                 </thead>
@@ -50,14 +51,33 @@
                             @endif
                         </td>
                         <td>
-                            <form action="{{ route('admin.pesanan.updateStatus', $pesanan->id) }}" method="POST" style="display: flex; gap: 5px;">
+                            @if($pesanan->status == 'Menunggu Konfirmasi Admin')
+                                <span style="background: #fef08a; color: #92400e; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">⏳ {{ $pesanan->status }}</span>
+                            @elseif(in_array($pesanan->status, ['Dikonfirmasi', 'Menunggu Jadwal', 'Diproses', 'Selesai']))
+                                <span style="background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">✅ {{ $pesanan->status }}</span>
+                            @elseif($pesanan->status == 'Dibatalkan')
+                                <span style="background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">❌ {{ $pesanan->status }}</span>
+                                @if($pesanan->alasan_batal)
+                                    <br><small style="color: #666; font-style: italic;">Alasan: {{ $pesanan->alasan_batal }}</small>
+                                @endif
+                            @else
+                                <span style="background: #e5e7eb; color: #374151; padding: 4px 8px; border-radius: 4px; font-size: 12px;">🔔 {{ $pesanan->status }}</span>
+                            @endif
+                        </td>
+                        <td>
+                            <form action="{{ route('admin.pesanan.updateStatus', $pesanan->id) }}" method="POST" style="display: flex; gap: 5px; flex-wrap: wrap;">
                                 @csrf
                                 <input type="hidden" name="tipe" value="reservasi">
-                                <select name="status" class="status-select">
+                                <select name="status" class="status-select" onchange="toggleReasonField(this)">
                                     <option value="Dikonfirmasi" {{ $pesanan->status == 'Dikonfirmasi' ? 'selected' : '' }}>Dikonfirmasi</option>
                                     <option value="Menunggu Jadwal" {{ $pesanan->status == 'Menunggu Jadwal' ? 'selected' : '' }}>Menunggu Jadwal</option>
+                                    <option value="Diproses" {{ $pesanan->status == 'Diproses' ? 'selected' : '' }}>Diproses</option>
                                     <option value="Selesai" {{ $pesanan->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                    <option value="Dibatalkan" {{ $pesanan->status == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
                                 </select>
+                                <div class="reason-field" style="display: {{ $pesanan->status == 'Dibatalkan' ? 'flex' : 'none' }}; gap: 5px; width: 100%;">
+                                    <input type="text" name="alasan_tolak" placeholder="Alasan pembatalan..." value="{{ $pesanan->alasan_batal ?? '' }}" style="padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px; flex: 1; font-size: 12px;">
+                                </div>
                                 <button type="submit" class="btn-sm btn-acc">Update</button>
                             </form>
                         </td>
@@ -74,4 +94,33 @@
         </div>
     </div>
 </div>
+
+<script>
+    function toggleReasonField(selectElement) {
+        const form = selectElement.closest('form');
+        const reasonField = form.querySelector('.reason-field');
+        if (selectElement.value === 'Dibatalkan') {
+            reasonField.style.display = 'flex';
+            reasonField.querySelector('input').focus();
+        } else {
+            reasonField.style.display = 'none';
+        }
+    }
+
+    function mintaAlasanTolak(form) {
+        let alasan = prompt("⚠️ Pesanan akan ditolak!\nSilakan masukkan alasan penolakan:");
+
+        if (alasan === null) {
+            return false;
+        }
+
+        if (alasan.trim() === "") {
+            alert("Alasan tolak harus diisi!");
+            return false;
+        }
+
+        form.querySelector('.input-alasan').value = alasan;
+        return true;
+    }
+</script>
 @endsection

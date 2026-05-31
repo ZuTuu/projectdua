@@ -172,6 +172,23 @@ public function prosesReservasi(Request $request)
             // Kalau misal tanggal keluarnya kosong, otomatis dihitung 1 hari
             $check_out = $request->tanggal_keluar ? \Carbon\Carbon::parse($request->tanggal_keluar) : $check_in->copy()->addDay();
 
+            // 🔥 VALIDASI KUOTA 10 KAMAR (CEK OVERLAP TANGGAL)
+            $kamarTerisi = reservasi::where(function($query) {
+                    $query->where('nama_layanan', 'LIKE', '%hotel%')
+                          ->orWhere('nama_layanan', 'LIKE', '%penitipan%');
+                })
+                ->whereNotIn('status', ['Dibatalkan', 'Selesai']) // Yang udah batal/selesai kamarnya dianggap kosong
+                ->where(function($query) use ($check_in, $check_out) {
+                    // Rumus Irisan: Check-in Lama < Check-out Baru AND Check-out Lama > Check-in Baru
+                    $query->where('tanggal', '<', $check_out->format('Y-m-d'))
+                          ->where('tanggal_keluar', '>', $check_in->format('Y-m-d'));
+                })->count();
+
+            // Kalau kamar yang terisi udah 10 atau lebih, tolak bookingannya!
+            if ($kamarTerisi >= 10) {
+                return back()->with('error', 'Maaf banget! Kamar Pet Hotel untuk periode tanggal tersebut sudah FULL. Silakan pilih tanggal lain ya.');
+            }
+
             $jumlah_malam = $check_in->diffInDays($check_out);
 
             // Jaga-jaga kalau check-in & check-out di hari yang sama, minimal dihitung 1 malam

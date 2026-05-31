@@ -97,7 +97,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/cart/remove', [CheckoutController::class, 'removeFromCart'])->name('cart.remove');
 
         Route::get('/pelanggan/rekam-medis', [App\Http\Controllers\DashboardController::class, 'rekamMedisPelanggan'])->name('pelanggan.rekam_medis');
-
+        Route::get('/transaksi/{id}/struk', [\App\Http\Controllers\ReservasiTicketController::class, 'downloadStruk'])->name('transaksi.struk.download');
         Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
 
         Route::post('/dashboard/reservasi/{id}/batal', [DashboardController::class, 'batalkan'])->name('reservasi.batal');
@@ -194,6 +194,7 @@ Route::middleware(['auth'])->group(function () {
         // POS Kasir (Admin)
         Route::get('/admin/pos', [PosKasirController::class, 'index'])->name('admin.pos.index');
         Route::post('/admin/pos/checkout', [PosKasirController::class, 'checkout'])->name('admin.pos.checkout');
+        Route::get('/admin/pos/receipt/{id}', [PosKasirController::class, 'receipt'])->name('admin.pos.receipt');
 
         Route::get('/admin/riwayat-pesanan', [DashboardController::class, 'riwayatPesananAdmin'])->name('admin.riwayat_pesanan');
         Route::get('/admin/riwayat-layanan', [DashboardController::class, 'riwayatLayananAdmin'])->name('admin.riwayat_layanan');
@@ -208,22 +209,6 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/update/{id}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('update');
             Route::delete('/delete/{id}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('destroy');
             Route::patch('/unblock/{id}', [App\Http\Controllers\Admin\UserController::class, 'unblock'])->name('unblock');
-        });
-
-        // 2. Kelola Katalog Produk (CRUD)
-        Route::prefix('admin/katalog')->name('admin.katalog.')->group(function() {
-            Route::get('/', [App\Http\Controllers\Admin\ProdukController::class, 'index'])->name('index');
-            Route::post('/store', [App\Http\Controllers\Admin\ProdukController::class, 'store'])->name('store');
-            Route::put('/update/{id}', [App\Http\Controllers\Admin\ProdukController::class, 'update'])->name('update');
-            Route::delete('/delete/{id}', [App\Http\Controllers\Admin\ProdukController::class, 'destroy'])->name('destroy');
-        });
-
-        // 3. Kelola Layanan Klinik (CRUD)
-        Route::prefix('admin/layanan')->name('admin.layanan.')->group(function() {
-            Route::get('/', [App\Http\Controllers\Admin\LayananController::class, 'index'])->name('index');
-            Route::post('/store', [App\Http\Controllers\Admin\LayananController::class, 'store'])->name('store');
-            Route::put('/update/{id}', [App\Http\Controllers\Admin\LayananController::class, 'update'])->name('update');
-            Route::delete('/delete/{id}', [App\Http\Controllers\Admin\LayananController::class, 'destroy'])->name('destroy');
         });
 
         // 4. Pengaturan Profil Admin

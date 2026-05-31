@@ -54,11 +54,15 @@
                                     </div>
                                     <div>
                                         <span style="color: #64748b;">Biaya Tambahan (Obat/Tindakan):</span><br>
-                                        <strong style="color: #b45309;">Rp {{ number_format($rm->biaya_tambahan ?? 0, 0, ',', '.') }}</strong>
+                                        <strong style="color: #b45309;">Rp {{ number_format($catatanDokter->biaya_tambahan ?? 0, 0, ',', '.') }}</strong>
                                     </div>
                                     <div>
-                                        <span style="color: #64748b;">Total Biaya Akhir:</span><br>
-                                        <strong style="color: #0f766e; font-size: 14px;">Rp {{ number_format(($rm->harga_total ?? 0) + ($rm->biaya_tambahan ?? 0), 0, ',', '.') }}</strong>
+                                        <span style="color: #64748b;">Total Biaya Akhir (Belum Potong DP):</span><br>
+                                        <strong style="color: #0f766e; font-size: 14px;">Rp {{ number_format(($rm->harga_total ?? 0) + ($catatanDokter->biaya_tambahan ?? 0), 0, ',', '.') }}</strong>
+                                    </div>
+                                    <div style="width: 100%; border-top: 1px solid #cbd5e1; margin-top: 5px; padding-top: 10px;">
+                                        <span style="color: #64748b;">Sisa Wajib Bayar (Setelah Potong DP):</span><br>
+                                        <strong style="color: #e11d48; font-size: 15px;">Rp {{ number_format(($rm->harga_total ?? 0) + ($catatanDokter->biaya_tambahan ?? 0) - ($rm->dp ?? 0), 0, ',', '.') }}</strong>
                                     </div>
                                 </div>
                             </div>

@@ -22,7 +22,7 @@ class TransaksiController extends Controller
         $transaksi = Transaksi::findOrFail($id);
         $oldStatus = $transaksi->status;
         $newStatus = $request->status;
-        
+
         // Jika status berubah menjadi "Dikonfirmasi", kurangi stok
         if ($oldStatus !== 'Dikonfirmasi' && $newStatus === 'Dikonfirmasi') {
             foreach ($transaksi->detilProduk as $detail) {
@@ -33,7 +33,7 @@ class TransaksiController extends Controller
                 }
             }
         }
-        
+
         // Jika status berubah dari "Dikonfirmasi" ke status lain, kembalikan stok
         if ($oldStatus === 'Dikonfirmasi' && $newStatus !== 'Dikonfirmasi') {
             foreach ($transaksi->detilProduk as $detail) {
@@ -44,8 +44,17 @@ class TransaksiController extends Controller
                 }
             }
         }
-        
+
         $transaksi->status = $newStatus;
+
+        // Cek jika statusnya ditolak, tangkap alasannya
+        if ($newStatus === 'Dibatalkan' && $request->has('alasan_tolak')) {
+            $transaksi->alasan_tolak = $request->alasan_tolak;
+        } else if ($newStatus !== 'Dibatalkan') {
+            // Bersihkan alasan tolak kalau admin mengubah lagi ke status lain
+            $transaksi->alasan_tolak = null;
+        }
+
         $transaksi->save();
 
         return redirect()->back()->with('success', 'Status pesanan #' . $id . ' berhasil diubah menjadi: ' . $newStatus);

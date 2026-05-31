@@ -79,7 +79,11 @@
             </div>
             <div class="form-group-user">
                 <label>Password</label>
-                <input type="password" name="password" class="form-control-user" required>
+                <div style="position: relative;">
+                    <input type="password" name="password" id="pass_tambah" class="form-control-user" required minlength="8" style="padding-right: 40px;">
+                    <span onclick="togglePassword('pass_tambah', 'icon_tambah')" id="icon_tambah" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; user-select: none;">🙈</span>
+                </div>
+                <small style="color: #666; font-size: 12px; margin-top: 4px; display: block;">* Minimal 8 karakter</small>
             </div>
             <div class="form-group-user">
                 <label>Role / Peran</label>
@@ -113,7 +117,11 @@
             </div>
             <div class="form-group-user">
                 <label>Password Baru (Kosongkan jika tidak ingin ganti)</label>
-                <input type="password" name="password" class="form-control-user">
+                <div style="position: relative;">
+                    <input type="password" name="password" id="pass_edit" class="form-control-user" minlength="8" style="padding-right: 40px;">
+                    <span onclick="togglePassword('pass_edit', 'icon_edit')" id="icon_edit" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; user-select: none;">🙈</span>
+                </div>
+                <small style="color: #666; font-size: 12px; margin-top: 4px; display: block;">* Minimal 8 karakter</small>
             </div>
             <div class="form-group-user">
                 <label>Role / Peran</label>
@@ -146,6 +154,25 @@
         document.getElementById('edit_role').value = user.role;
         document.getElementById('edit_status').value = user.status || 'aktif';
         document.getElementById('formEdit').action = `/admin/users/update/${user.id}`;
+
+        // Reset password field & icon setiap kali modal edit dibuka
+        document.getElementById('pass_edit').value = '';
+        document.getElementById('pass_edit').type = 'password';
+        document.getElementById('icon_edit').innerText = '🙈';
+    }
+
+    // Fungsi untuk Toggle Password (Lihat / Sembunyikan)
+    function togglePassword(inputId, iconId) {
+        let input = document.getElementById(inputId);
+        let icon = document.getElementById(iconId);
+
+        if (input.type === "password") {
+            input.type = "text";
+            icon.innerText = "👁️"; // Ganti jadi icon mata
+        } else {
+            input.type = "password";
+            icon.innerText = "🙈"; // Balik ke monyet tutup mata
+        }
     }
 
     // Klik di luar buat nutup modal

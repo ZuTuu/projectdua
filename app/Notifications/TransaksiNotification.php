@@ -28,6 +28,11 @@ class TransaksiNotification extends Notification
         // Pesan beda-beda tergantung di-acc atau ditolak
         if ($this->status == 'Dikonfirmasi') {
             $pesan = 'Hore! Pesanan produk kamu (#TRX-' . $this->transaksi->id . ') berhasil dikonfirmasi Admin dan akan segera diproses.';
+        } elseif ($this->status == 'Ditolak') {
+            $pesan = 'Maaf, pesanan produk kamu (#TRX-' . $this->transaksi->id . ') dibatalkan/ditolak oleh Admin.';
+            if (!empty($this->transaksi->alasan_tolak)) {
+                $pesan .= ' Alasan: ' . $this->transaksi->alasan_tolak;
+            }
         } else {
             $pesan = 'Maaf, pesanan produk kamu (#TRX-' . $this->transaksi->id . ') dibatalkan/ditolak oleh Admin.';
         }
@@ -36,6 +41,7 @@ class TransaksiNotification extends Notification
             'id_transaksi' => $this->transaksi->id,
             'pesan' => $pesan,
             'status' => $this->status,
+            'alasan_tolak' => $this->transaksi->alasan_tolak ?? null,
         ];
     }
 }

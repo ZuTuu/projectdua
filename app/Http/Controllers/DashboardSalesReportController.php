@@ -41,10 +41,10 @@ class DashboardSalesReportController extends Controller
         $totalRevenue = 0;
         $totalQtySold = 0;
         $topProductName = null;
-        
+
         $pemasukkanProduk = 0;
         $pemasukkanLayanan = 0;
-        
+
         // Data untuk layanan
         $totalLayananTerjual = 0;
         $topServiceName = null;
@@ -109,12 +109,12 @@ class DashboardSalesReportController extends Controller
 
             $pieLabels = $topProducts->pluck('nama_produk')->all();
             $pieData = $topProducts->pluck('qty_sold')->map(fn($v) => (int) $v)->all();
-            
+
             $pemasukkanProduk = (float) Transaksi::query()
                 ->where('status', 'Selesai')
                 ->whereBetween('created_at', [$start, $end])
                 ->sum('total_harga');
-            
+
             $pemasukkanLayanan = (float) reservasi::query()
                 ->where('status', 'Selesai')
                 ->whereBetween('created_at', [$start, $end])
@@ -147,7 +147,7 @@ class DashboardSalesReportController extends Controller
 
             $serviceLabels = $topServices->pluck('nama_layanan')->all();
             $serviceData = $topServices->pluck('qty_sold')->map(fn($v) => (int) $v)->all();
-            
+
             // Data untuk grafik perbandingan produk vs layanan
             $comparisonData = [(float) $pemasukkanProduk, (float) $pemasukkanLayanan];
 
@@ -223,17 +223,17 @@ class DashboardSalesReportController extends Controller
                 ->orderByDesc('created_at')
                 ->limit(10)
                 ->get();
-            
+
             $pemasukkanProduk = (float) Transaksi::query()
                 ->where('status', 'Selesai')
                 ->whereBetween('created_at', [$start, $end])
                 ->sum('total_harga');
-            
+
             $pemasukkanLayanan = (float) reservasi::query()
                 ->where('status', 'Selesai')
                 ->whereBetween('created_at', [$start, $end])
                 ->sum('harga_total');
-            
+
             // Top Layanan untuk mode month
             $topServicesAgg = reservasi::query()
                 ->where('status', 'Selesai')
@@ -261,7 +261,7 @@ class DashboardSalesReportController extends Controller
 
             $serviceLabels = $topServices->pluck('nama_layanan')->all();
             $serviceData = $topServices->pluck('qty_sold')->map(fn($v) => (int) $v)->all();
-            
+
             // Data untuk grafik perbandingan produk vs layanan
             $comparisonData = [(float) $pemasukkanProduk, (float) $pemasukkanLayanan];
         }
@@ -329,17 +329,17 @@ class DashboardSalesReportController extends Controller
                 ->orderByDesc('created_at')
                 ->limit(10)
                 ->get();
-            
+
             $pemasukkanProduk = (float) Transaksi::query()
                 ->where('status', 'Selesai')
                 ->whereBetween('created_at', [$start, $end])
                 ->sum('total_harga');
-            
+
             $pemasukkanLayanan = (float) reservasi::query()
                 ->where('status', 'Selesai')
                 ->whereBetween('created_at', [$start, $end])
                 ->sum('harga_total');
-            
+
             // Top Layanan untuk mode year
             $topServicesAgg = reservasi::query()
                 ->where('status', 'Selesai')
@@ -367,7 +367,7 @@ class DashboardSalesReportController extends Controller
 
             $serviceLabels = $topServices->pluck('nama_layanan')->all();
             $serviceData = $topServices->pluck('qty_sold')->map(fn($v) => (int) $v)->all();
-            
+
             // Data untuk grafik perbandingan produk vs layanan
             $comparisonData = [(float) $pemasukkanProduk, (float) $pemasukkanLayanan];
         }

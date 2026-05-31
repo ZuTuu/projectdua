@@ -25,8 +25,8 @@ protected $fillable = [
         'keluhan',
         'harga_total',
         'biaya_tambahan',
-        'dp',             
-        'sisa_bayar',     
+        'dp',
+        'sisa_bayar',
         'status',
         'alasan_batal',
         'bukti_pembayaran_dp'

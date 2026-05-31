@@ -130,14 +130,29 @@
 @endauth
 
                         @auth
-                            <a href="{{ route('dashboard.pelanggan') }}" class="p-2 hover:bg-ungu-terang rounded-full transition-colors group" title="Dashboard Saya">
-                                <i class="fas fa-user-circle text-ungu text-2xl group-hover:scale-110 transition-transform"></i>
-                            </a>
-                        @else
-                            <a href="{{ route('login') }}" class="px-4 py-2 bg-ungu text-white rounded-full font-semibold hover:bg-ungu-gelap transition-colors text-sm shadow-sm">
-                                Login
-                            </a>
-                        @endauth
+    @php
+        // Cek role user yang lagi login buat nentuin arah link dashboard-nya
+        $dashboardRoute = route('dashboard.pelanggan'); // Default
+        
+        if (auth()->user()->role == 'admin') {
+            $dashboardRoute = route('dashboard.admin'); // Sesuaikan sama nama route admin kamu
+        } elseif (auth()->user()->role == 'owner') {
+            $dashboardRoute = route('dashboard.owner');
+        } elseif (auth()->user()->role == 'dokter') {
+            $dashboardRoute = route('dokter.dashboard');
+        } elseif (auth()->user()->role == 'staff') {
+            $dashboardRoute = route('dashboard.staff');
+        }
+    @endphp
+
+    <a href="{{ $dashboardRoute }}" class="p-2 hover:bg-ungu-terang rounded-full transition-colors group" title="Dashboard Saya">
+        <i class="fas fa-user-circle text-ungu text-2xl group-hover:scale-110 transition-transform"></i>
+    </a>
+@else
+    <a href="{{ route('login') }}" class="px-4 py-2 bg-ungu text-white rounded-full font-semibold hover:bg-ungu-gelap transition-colors text-sm shadow-sm">
+        Login
+    </a>
+@endauth
                     </div>
 
                 </div>
@@ -646,14 +661,12 @@
         const step2 = document.getElementById('step-2');
         const btnNext = document.getElementById('btnNext');
         const btnBack = document.getElementById('btnBack');
-
         const inputHewan = document.getElementById('input_hewan');
         const namaLayananInput = document.getElementById('modalNamaLayananInput');
 
         const wrapWaktu = document.getElementById('wrap_waktu');
         const inputWaktu = document.getElementById('input_waktu');
         const optHotel = document.getElementById('opt_hotel');
-
         const wrapHotelInfo = document.getElementById('wrap_hotel_info');
         const inputTglCheckout = document.getElementById('input_tgl_checkout');
 
@@ -762,6 +775,13 @@
         }
     });
 </script>
-
+@if(session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Nampilin pesan error ke user kalau kamarnya penuh
+            alert("❌ Gagal Booking:\n\n{!! session('error') !!}");
+        });
+    </script>
+    @endif
 </body>
 </html>

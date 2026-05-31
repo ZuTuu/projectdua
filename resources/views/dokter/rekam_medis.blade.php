@@ -52,14 +52,15 @@
                 <select id="rm-dokter" name="dokter">
                     <option value="all">Semua Dokter</option>
                     @php
-                        $selectedDokter = request('dokter');
-                        // Kita set fix manual aja dokternya biar data testing ga masuk
-                        $dokterList = ['Arifa', 'Agung'];
+                        $selectedDokterId = request('dokter');
+                        $dokterList = $rekamMedis->pluck('user')->unique('id')->values()->all();
                     @endphp
-                    @foreach($dokterList as $namaDokter)
-                        <option value="{{ strtolower($namaDokter) }}" {{ strtolower($selectedDokter) === strtolower($namaDokter) ? 'selected' : '' }}>
-                            drh. {{ $namaDokter }}
-                        </option>
+                    @foreach($dokterList as $dokter)
+                        @if(isset($dokter->id))
+                            <option value="{{ $dokter->id }}" {{ (string)$selectedDokterId === (string)$dokter->id ? 'selected' : '' }}>
+                                drh. {{ $dokter->name }}
+                            </option>
+                        @endif
                     @endforeach
                 </select>
             </div>
@@ -115,7 +116,7 @@
                         @endphp
                         <tr class="rm-row"
                             data-q="{{ strtolower($hewanNama.' '.$pemilikNama.' '.$diagnosa) }}"
-                            data-dokter="{{ strtolower($dokterNama) }}"
+                            data-dokter-id="{{ $dokterId }}"
                             data-tahun="{{ $tahun }}"
                         >
                             <td style="font-weight: 500;">{{ optional($rm->created_at)->format('d M Y') }}</td>
@@ -156,16 +157,16 @@
 
         function applyFilters(){
             const q = (searchEl?.value || '').trim().toLowerCase();
-            const dokterVal = (dokterEl?.value || 'all').toLowerCase();
+            const dokterId = dokterEl?.value || 'all';
             const tahun = tahunEl?.value || 'all';
 
             rows.forEach(row => {
                 const rowQ = (row.dataset.q || '');
-                const rowDokter = (row.dataset.dokter || '');
+                const rowDokter = row.dataset.dokterId || '';
                 const rowTahun = row.dataset.tahun || '';
 
                 const matchQ = !q || rowQ.includes(q);
-                const matchDokter = dokterVal === 'all' || rowDokter.includes(dokterVal);
+                const matchDokter = dokterId === 'all' || String(rowDokter) === String(dokterId);
                 const matchTahun = tahun === 'all' || String(rowTahun) === String(tahun);
 
                 row.style.display = (matchQ && matchDokter && matchTahun) ? '' : 'none';
